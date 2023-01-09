@@ -1,0 +1,37 @@
+Voici un exemple de code Python qui permet de prédire la gravité (faible, moyen, élevé) du cancer chez un patient à partir 
+des données d'autres patients contenues dans une base de données nommée "patient_cancer.csv" obtenu à partir ici: https://www.kaggle.com/datasets/rishidamarla/cancer-patients-data?resource=download
+
+
+# Import des librairies nécessaires
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+# Chargement des données de patients
+data = pd.read_csv("patient_cancer.csv")
+
+# Séparation des données en deux parties : une partie pour l'entraînement du modèle et une partie pour tester le modèle
+X = data.drop("NiveauCancer", axis=1)
+y = data["NiveauCancer"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Création et entraînement d'un modèle de forêt aléatoire
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Test du modèle sur les données de test
+accuracy = model.score(X_test, y_test)
+print("Précision du modèle : {:.2f}%".format(accuracy * 100))
+
+# Prédiction pour un nouveau patient
+new_patient = pd.DataFrame({"IdPatient":[111], "AgeGenrePollutionDeAir":[30], "UsageAlcool":[1], "AllergiePoussiere":[2], "RisqueProfessionnel":[4], "RisqueGenetique":[5], "MaladiePulmonaireChronique":[4], "RegimeEquilibre":[3], "Obesite":[2], "Fumeur":[2], "FumerPassif":[2], "DouleurPoitrine":[4], "TouxDeSang":[3], "Fatigue":[2], "PerteDePoids":[2], "Essouflement":[4], "RespirationSifflante":[3], "DifficulteAAvaler":[4], "OngleDoigt":[2], "FrequenceFroid":[2], "TouxSeche":[3], "Ronglement":[1]})
+prediction = model.predict(new_patient)
+
+if prediction[0] == "Low":
+    print("Le patient a un rique de cancer faible")
+elif prediction[0] == "Medium":
+        print("Le patient a un risque de cancer moyen")
+else:
+        print("Le patient a un risque de cancer élevé")
+
+
